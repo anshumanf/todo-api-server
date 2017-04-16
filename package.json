@@ -1,0 +1,24 @@
+{
+  "name": "basic-express",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "watch:todos": "nodemon index.js",
+    "test": "ava",
+    "watch:test": "ava --watch"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "clone": "^2.1.1",
+    "express": "^4.15.2",
+    "json-patch": "^0.6.1",
+    "nodemon": "^1.11.0",
+    "tcomb": "^3.2.20",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "node-fetch": "^1.6.3"
+  }
+}
