@@ -3,9 +3,10 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const {
-  validateTodoId,
-  validateTodoRequest,
-  validateTodoPatchRequest,
+  TodoId,
+  CreateTodoRequest,
+  PatchTodoRequest,
+  validate,
 } = require('./validation')
 
 const {
@@ -46,7 +47,7 @@ app.get('/todos/:id', (req, res) => {
   let todo = null
 
   try {
-    validateTodoId(id)
+    validate(TodoId)(id)
   }
   catch(e) {
     status = false
@@ -75,7 +76,7 @@ app.post('/todos', (req, res) => {
   let todo = req.body;
 
   try {
-    validateTodoRequest(todo)
+    validate(CreateTodoRequest)(todo)
   }
   catch(e) {
     status = false
@@ -99,8 +100,8 @@ app.patch('/todos/:id', (req, res) => {
   let todo = null
 
   try {
-    validateTodoId(id)
-    validateTodoPatchRequest(patch)
+    validate(TodoId)(id)
+    validate(PatchTodoRequest)(patch)
   } catch(e) {
     status = false
     res.status(400)
@@ -129,7 +130,7 @@ app.delete('/todos/:id', (req, res) => {
   const id = req.params.id;
 
   try {
-    validateTodoId(id)
+    validate(TodoId)(id)
   }
   catch(e) {
     status = false

@@ -1,46 +1,33 @@
 const t = require('tcomb')
 
-const TodoRequest = t.struct({
+const TodoId = t.String;
+
+const CreateTodoRequest = t.struct({
   text: t.String,
 })
 
 const PatchOp = t.enums.of(['replace'])
-const PatchPaths = t.enums.of(['/text'])
+const PatchPath = t.enums.of(['/text'])
 
-const TodoPatch = t.struct({
+const PatchTodoInstruction = t.struct({
   op: PatchOp,
-  path: PatchPaths,
+  path: PatchPath,
   value: t.String,
 })
 
-const TodoPatchRequest = t.list(TodoPatch)
+const PatchTodoRequest = t.list(PatchTodoInstruction)
 
-const validateTodoId = id => {
+const validate = type => input => {
   try {
-    t.String(id)
+    type(input)
   } catch(e) {
-    throw Error(`Invalid input. Expected format:\n${t.String.displayName}`)
-  }
-}
-
-const validateTodoRequest = todoReq => {
-  try {
-    TodoRequest(todoReq)
-  } catch(e) {
-    throw Error(`Invalid input. Expected format:\n${TodoRequest.displayName}`)
-  }
-}
-
-const validateTodoPatchRequest = todoPatchReq => {
-  try {
-    TodoPatchRequest(todoPatchReq)
-  } catch(e) {
-    throw Error(`Invalid input. Expected format:\n${TodoPatchRequest.displayName}`)
+    throw Error(`Invalid input. Expected format:\n${type.displayName}`)
   }
 }
 
 module.exports = {
-  validateTodoId,
-  validateTodoRequest,
-  validateTodoPatchRequest,
+  TodoId,
+  CreateTodoRequest,
+  PatchTodoRequest,
+  validate,
 }
