@@ -1,5 +1,6 @@
 const express = require('express')
-const bodyParser = require('body-parser');
+const cors = require('cors')
+const bodyParser = require('body-parser')
 
 const {
   validateTodoId,
@@ -19,6 +20,7 @@ const PORT = 3000
 
 const app = express()
 
+app.use(cors({exposedHeaders: ['Location', 'ETag']}))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 

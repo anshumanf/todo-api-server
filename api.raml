@@ -1,0 +1,159 @@
+#%RAML 1.0
+title: Todo API
+version: 1
+baseUri: http://localhost:3000
+
+# securitySchemes:
+#   custom_scheme:
+#     description: |
+#       A custom security scheme for authenticating requests.
+#     type: x-custom
+
+types:
+
+  TodoId:
+    type: string
+
+  CreateTodoRequest:
+    properties:
+      text: string
+    example: |
+      {
+        "text": "Sample text"
+      }
+
+  PatchOp:
+    enum:
+      - replace
+
+  PatchPath:
+    enum:
+      - /text
+
+  PatchTodoInstruction:
+    properties:
+      op:
+        type: PatchOp
+      path:
+        type: PatchPath
+      value:
+        type: string
+
+  PatchTodoRequest:
+    type: PatchTodoInstruction[]
+    example: |
+      [
+        {
+          "op": "replace",
+          "path": "/text",
+          "value": "Newer text"
+        }
+      ]
+
+  Todo:
+    properties:
+      id:
+        type: TodoId
+      text:
+        type: string
+    example: |
+      {
+        "id" : "110ec58a-a0f2-4ac4-8393-c866d813b8d1",
+        "text": "Sample text"
+      }
+
+/todos:
+  get:
+    description: Get all todos
+    responses:
+      200:
+        body:
+          application/json:
+            type: Todo[]
+            example: |
+              [
+                {
+                  "id" : "110ec58a-a0f2-4ac4-8393-c866d813b8d1",
+                  "text": "Sample text"
+                },
+                {
+                  "id" : "23akfj14-a0f2-4ac4-8393-c866d813b8d1",
+                  "text": "Lorem ipsum"
+                }
+              ]
+  post:
+    description: Create new todo
+    body:
+      application/json:
+        type: CreateTodoRequest
+    responses:
+      201:
+        headers:
+          location:
+            type: string
+            description: URI for newly created todo
+            example: /todos/110ec58a-a0f2-4ac4-8393-c866d813b8d1
+        body:
+          application/json:
+            type: Todo
+      400:
+        body:
+          application/json:
+            type: string
+  /{id}:
+      uriParameters:
+        id:
+          description: A todo id
+          type: TodoId
+      get:
+        description: Get todo by id
+        responses:
+          200:
+            body:
+              application/json:
+                type: Todo
+          400:
+            body:
+              application/json:
+                type: string
+          404:
+            body:
+              application/json:
+                type: nil
+                # type: string
+      patch:
+        description: Edit todo by id
+        body:
+          application/json:
+            type: PatchTodoRequest
+        responses:
+          200:
+            headers:
+              location:
+                type: string
+                description: URI for newly patched todo
+                example: /todos/110ec58a-a0f2-4ac4-8393-c866d813b8d1
+            body:
+              application/json:
+                type: Todo
+          400:
+            body:
+              application/json:
+                type: string
+          404:
+            body:
+              application/json:
+                type: nil
+                # type: string
+      delete:
+        description: Delete todo by id
+        responses:
+          204:
+            body:
+              application/json:
+                type: nil
+                # type: string
+          400:
+            body:
+              application/json:
+                type: string
